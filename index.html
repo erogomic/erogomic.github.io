@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Erogomic</title>
+  <meta name="description" content="Erogomic — a new company building versatile professional solutions. Fresh ideas, modern approach." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0f172a;
+      --navy-light: #1e293b;
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --teal-soft: #ccfbf1;
+      --gray: #64748b;
+      --gray-light: #f1f5f9;
+      --white: #ffffff;
+      --text: #1e293b;
+      --radius: 12px;
+      --shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.15);
+      --transition: all 0.3s ease;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--white);
+    }
+
+    /* ========== FALLBACK / ERROR SCREEN (HTML only) ========== */
+    #fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--navy);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    #fallback .fallback-inner {
+      max-width: 480px;
+    }
+    #fallback .fallback-logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.5px;
+    }
+    #fallback .fallback-logo span { color: var(--teal-light); }
+    #fallback h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      letter-spacing: -0.3px;
+    }
+    #fallback p {
+      color: #94a3b8;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.65;
+    }
+    #fallback .fallback-hint {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    #fallback .fallback-error {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 10px;
+      color: #fca5a5;
+      font-size: 0.9rem;
+      text-align: left;
+      word-break: break-word;
+    }
+    #fallback .fallback-error.visible { display: block; }
+
+    #app { display: none; }
+
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    .container { width: min(1200px, 92%); margin-inline: auto; }
+
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+    }
+    header.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    nav {
+      display: flex; align-items: center; justify-content: space-between; height: 72px;
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 700; color: var(--white); letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--teal-light); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: #e2e8f0; font-weight: 500; font-size: 0.95rem; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--teal-light); }
+    .nav-cta {
+      background: var(--teal); color: white !important;
+      padding: 0.55rem 1.25rem; border-radius: 8px; font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--teal-light); }
+    .nav-right { display: flex; align-items: center; gap: 0.5rem; }
+    .lang-switcher { display: flex; align-items: center; gap: 0.35rem; margin-left: 1.5rem; }
+    .lang-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.25);
+      color: #94a3b8; font-size: 0.8rem; font-weight: 600;
+      padding: 0.3rem 0.55rem; border-radius: 6px; cursor: pointer;
+      transition: var(--transition); font-family: inherit; text-transform: uppercase;
+    }
+    .lang-btn:hover { color: white; border-color: rgba(255,255,255,0.5); }
+    .lang-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      width: 24px; height: 2px; background: white; border-radius: 2px; transition: var(--transition);
+    }
+
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 50%, #0f766e 100%);
+      color: white; display: flex; align-items: center;
+      position: relative; overflow: hidden; padding-top: 72px;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 640px; }
+    .hero-badge {
+      display: inline-block; background: rgba(20, 184, 166, 0.2);
+      color: var(--teal-light); font-size: 0.85rem; font-weight: 600;
+      padding: 0.35rem 0.9rem; border-radius: 50px; margin-bottom: 1.5rem;
+      border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.5rem); font-weight: 700;
+      line-height: 1.15; margin-bottom: 1.25rem; letter-spacing: -1px;
+    }
+    .hero p { font-size: 1.15rem; color: #cbd5e1; margin-bottom: 2rem; max-width: 520px; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.75rem; border-radius: 10px; font-weight: 600;
+      font-size: 1rem; transition: var(--transition); cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--teal); color: white; }
+    .btn-primary:hover {
+      background: var(--teal-light); transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.35);
+    }
+    .btn-secondary {
+      background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3);
+    }
+    .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+    section { padding: 5.5rem 0; }
+    .section-header { text-align: center; max-width: 600px; margin: 0 auto 3.5rem; }
+    .section-header .label {
+      display: inline-block; color: var(--teal); font-weight: 600;
+      font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem;
+    }
+    .section-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 700;
+      color: var(--navy); margin-bottom: 1rem; letter-spacing: -0.5px;
+    }
+    .section-header p { color: var(--gray); font-size: 1.05rem; }
+
+    .about { background: var(--gray-light); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .about-text h3 { font-size: 1.6rem; color: var(--navy); margin-bottom: 1rem; }
+    .about-text p { color: var(--gray); margin-bottom: 1.25rem; }
+    .about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.8rem; font-weight: 700; color: var(--teal); }
+    .stat span { font-size: 0.9rem; color: var(--gray); }
+    .about-visual {
+      background: linear-gradient(145deg, var(--navy), #1e3a5f);
+      border-radius: 20px; height: 380px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .about-visual::after {
+      content: 'E'; font-size: 12rem; font-weight: 700;
+      color: rgba(20, 184, 166, 0.15); position: absolute;
+    }
+    .about-visual .card {
+      background: white; padding: 1.75rem; border-radius: 16px;
+      box-shadow: var(--shadow); width: 70%; z-index: 1;
+    }
+    .about-visual .card h4 { color: var(--navy); margin-bottom: 0.5rem; }
+    .about-visual .card p { color: var(--gray); font-size: 0.95rem; }
+
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.75rem;
+    }
+    .service-card {
+      background: white; border: 1px solid #e2e8f0; border-radius: var(--radius);
+      padding: 2rem; transition: var(--transition);
+    }
+    .service-card:hover {
+      transform: translateY(-6px); box-shadow: var(--shadow); border-color: transparent;
+    }
+    .service-icon {
+      width: 52px; height: 52px; background: var(--teal-soft); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem; font-size: 1.5rem;
+    }
+    .service-card h3 { font-size: 1.2rem; color: var(--navy); margin-bottom: 0.6rem; }
+    .service-card p { color: var(--gray); font-size: 0.95rem; }
+
+    .why { background: var(--navy); color: white; }
+    .why .section-header .label { color: var(--teal-light); }
+    .why .section-header h2 { color: white; }
+    .why .section-header p { color: #94a3b8; }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;
+    }
+    .why-item { display: flex; gap: 1.25rem; }
+    .why-number {
+      flex-shrink: 0; width: 40px; height: 40px; background: var(--teal);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem;
+    }
+    .why-item h3 { font-size: 1.15rem; margin-bottom: 0.4rem; }
+    .why-item p { color: #94a3b8; font-size: 0.95rem; }
+
+    .contact { background: var(--gray-light); }
+    .contact-simple { display: flex; justify-content: center; }
+    .contact-email-card {
+      background: white; padding: 3rem 2.5rem; border-radius: 16px;
+      box-shadow: var(--shadow); text-align: center; max-width: 420px; width: 100%;
+    }
+    .contact-email-card .icon {
+      width: 64px; height: 64px; background: var(--teal-soft); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin: 0 auto 1.25rem;
+    }
+    .contact-email-card h3 { font-size: 1.4rem; color: var(--navy); margin-bottom: 0.75rem; }
+    .email-link {
+      display: inline-block; font-size: 1.25rem; font-weight: 600;
+      color: var(--teal); margin-bottom: 1rem; transition: color 0.2s;
+    }
+    .email-link:hover { color: var(--teal-light); }
+    .contact-email-card p { color: var(--gray); font-size: 0.95rem; }
+
+    footer {
+      background: var(--navy); color: #94a3b8; padding: 3.5rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 3rem;
+    }
+    .footer-brand .logo { margin-bottom: 1rem; display: inline-block; }
+    .footer-brand p { font-size: 0.95rem; max-width: 280px; }
+    .footer-col h4 { color: white; font-size: 1rem; margin-bottom: 1.25rem; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.6rem; }
+    .footer-col a { color: #94a3b8; font-size: 0.95rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--teal-light); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.75rem;
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none; position: absolute; top: 72px; left: 0; right: 0;
+        background: var(--navy); flex-direction: column; padding: 1.5rem;
+        gap: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .lang-switcher { margin-left: 0; margin-right: 0.75rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-visual { height: 280px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .about-stats { grid-template-columns: 1fr; gap: 1rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .hero-buttons { flex-direction: column; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HTML-only fallback: shown when JS is disabled OR when any error occurs -->
+  <div id="fallback">
+    <div class="fallback-inner">
+      <div class="fallback-logo">Erogo<span>mic</span></div>
+      <h1 id="fallback-title">JavaScript is required</h1>
+      <p id="fallback-message">This site is built as a modern web application and relies on JavaScript to deliver its full experience. Please enable JavaScript in your browser settings, then refresh this page to continue.</p>
+      <p class="fallback-hint">
+        Lai turpinātu, lūdzu, ieslēdziet JavaScript pārlūkprogrammā un atsvaidziniet lapu.<br>
+        Чтобы продолжить, включите JavaScript в настройках браузера и обновите страницу.
+      </p>
+      <div id="fallback-error" class="fallback-error"></div>
+    </div>
+  </div>
+
+  <div id="app"></div>
+
+  <script>
+    // ========== ERROR HANDLING (shows errors in the HTML fallback) ==========
+    function showError(title, message, detail) {
+      const fallback = document.getElementById('fallback');
+      const app = document.getElementById('app');
+      if (app) app.style.display = 'none';
+      if (fallback) fallback.style.display = 'flex';
+
+      const titleEl = document.getElementById('fallback-title');
+      const msgEl = document.getElementById('fallback-message');
+      const errEl = document.getElementById('fallback-error');
+
+      if (titleEl) titleEl.textContent = title || 'Unable to load the site';
+      if (msgEl) msgEl.textContent = message || 'An unexpected issue prevented this page from loading. Please try refreshing, or contact us if the problem continues.';
+      if (errEl) {
+        if (detail) {
+          errEl.textContent = detail;
+          errEl.classList.add('visible');
+        } else {
+          errEl.classList.remove('visible');
+        }
+      }
+    }
+
+    window.onerror = function (msg, src, line, col, err) {
+      showError(
+        'Unable to load the site',
+        'A technical issue prevented this page from loading correctly. Please refresh and try again. If the problem persists, contact us at erogomic@gmail.com.',
+        (err && err.stack) ? err.stack : (msg + (line ? ' (line ' + line + ')' : ''))
+      );
+      return true;
+    };
+
+    window.addEventListener('unhandledrejection', function (event) {
+      showError(
+        'Unable to load the site',
+        'A technical issue prevented this page from loading correctly. Please refresh and try again. If the problem persists, contact us at erogomic@gmail.com.',
+        event.reason ? String(event.reason) : 'Unhandled promise rejection'
+      );
+    });
+
+    // ========== TRANSLATIONS ==========
+    const translations = {
+      en: {
+        nav_home: "Home", nav_about: "About", nav_services: "Services", nav_why: "Why Us", nav_contact: "Get in Touch",
+        hero_badge: "Just launched · 2026",
+        hero_title: "A fresh start for versatile professional solutions",
+        hero_text: "Erogomic is a brand-new company built to deliver flexible, high-quality solutions that adapt to the way modern businesses work. We’re just getting started — and we’re ready to grow with you.",
+        hero_btn1: "See What We Offer", hero_btn2: "Get in Touch",
+        about_label: "About Erogomic", about_title: "Brand new. Built for versatility.",
+        about_p1: "Erogomic was founded today with a simple idea: professional solutions should be flexible, clear, and ready to grow with the people who use them.",
+        about_p2: "We’re a young company with a modern approach — focused on listening first, building smart, and delivering real value without the usual complexity.",
+        stat_founded: "Founded", stat_fresh: "Fresh thinking", stat_grow: "Room to grow",
+        about_card_title: "Starting fresh with you",
+        about_card_text: "We’re new, we’re hungry, and we’re ready to build something that actually fits your needs.",
+        services_label: "What We Offer", services_title: "Solutions designed to grow with you",
+        services_text: "As a new company, we’re building flexible offerings from day one — so you get modern solutions without the baggage of old systems.",
+        svc1_title: "Custom Solutions", svc1_text: "Tailored products and systems built around your exact requirements and workflow.",
+        svc2_title: "Strategy & Consulting", svc2_text: "Clear guidance and practical roadmaps that help you make better decisions faster.", svc2_short: "Consulting",
+        svc3_title: "Implementation", svc3_text: "End-to-end delivery so you can go from idea to working solution with confidence.",
+        svc4_title: "Ongoing Support", svc4_text: "Reliable maintenance, updates, and optimization to keep everything running smoothly.", svc4_short: "Support",
+        why_label: "Why Erogomic", why_title: "Why work with a new company?",
+        why_text: "Being new means we move fast, listen closely, and build without old constraints.",
+        why1_title: "Fresh perspective", why1_text: "No outdated processes or legacy baggage. We start with modern tools and clear thinking.",
+        why2_title: "Direct access", why2_text: "You work with the people actually building the solution — not layers of account managers.",
+        why3_title: "Flexible & fast", why3_text: "We adapt quickly. Your feedback shapes what we build from day one.",
+        why4_title: "Growing together", why4_text: "We’re in the early stages too. Partnering with us means growing alongside a company that values your success.",
+        contact_label: "Contact", contact_title: "Let’s start something new",
+        contact_text: "We’re just launching — reach out and be among the first to work with us.",
+        contact_email_title: "Email us", contact_email_text: "We’d love to hear from you. Drop us a line anytime.",
+        footer_desc: "A brand-new company building versatile professional solutions. Fresh ideas, modern approach, room to grow together.",
+        footer_company: "Company", footer_solutions: "Solutions", footer_connect: "Connect", footer_email: "Email us",
+        footer_copy: "© 2026 Erogomic. All rights reserved.", footer_tag: "Founded 2026 · Just getting started."
+      },
+      lv: {
+        nav_home: "Sākums", nav_about: "Par mums", nav_services: "Pakalpojumi", nav_why: "Kāpēc mēs", nav_contact: "Sazināties",
+        hero_badge: "Tikko palaists · 2026",
+        hero_title: "Jauns sākums daudzpusīgiem profesionāliem risinājumiem",
+        hero_text: "Erogomic ir jauns uzņēmums, kas rada elastīgus, kvalitatīvus risinājumus, kuri pielāgojas mūsdienu biznesa vajadzībām. Mēs tikko sākam — un esam gatavi augt kopā ar jums.",
+        hero_btn1: "Skatīt piedāvājumu", hero_btn2: "Sazināties",
+        about_label: "Par Erogomic", about_title: "Jauns. Veidots daudzpusībai.",
+        about_p1: "Erogomic tika dibināts šodien ar vienkāršu ideju: profesionāliem risinājumiem jābūt elastīgiem, skaidriem un gataviem augt kopā ar lietotājiem.",
+        about_p2: "Mēs esam jauns uzņēmums ar mūsdienīgu pieeju — klausāmies vispirms, veidojam gudri un piegādājam reālu vērtību bez liekas sarežģītības.",
+        stat_founded: "Dibināts", stat_fresh: "Svaiga domāšana", stat_grow: "Iespēja augt",
+        about_card_title: "Sākam no jauna kopā ar jums",
+        about_card_text: "Mēs esam jauni, motivēti un gatavi veidot risinājumus, kas patiešām atbilst jūsu vajadzībām.",
+        services_label: "Ko mēs piedāvājam", services_title: "Risinājumi, kas aug kopā ar jums",
+        services_text: "Kā jauns uzņēmums mēs veidojam elastīgus piedāvājumus no pirmās dienas — lai jūs iegūtu mūsdienīgus risinājumus bez vecu sistēmu nastas.",
+        svc1_title: "Individuāli risinājumi", svc1_text: "Pielāgoti produkti un sistēmas, kas veidoti ap jūsu precīzajām prasībām un darba plūsmu.",
+        svc2_title: "Stratēģija un konsultācijas", svc2_text: "Skaidri ieteikumi un praktiski ceļveži, kas palīdz ātrāk pieņemt labākus lēmumus.", svc2_short: "Konsultācijas",
+        svc3_title: "Ieviešana", svc3_text: "Pilna cikla piegāde — no idejas līdz strādājošam risinājumam ar pārliecību.",
+        svc4_title: "Nepārtraukts atbalsts", svc4_text: "Uzticama uzturēšana, atjauninājumi un optimizācija, lai viss darbotos raiti.", svc4_short: "Atbalsts",
+        why_label: "Kāpēc Erogomic", why_title: "Kāpēc strādāt ar jaunu uzņēmumu?",
+        why_text: "Būt jaunam nozīmē ātri rīkoties, uzmanīgi klausīties un veidot bez veciem ierobežojumiem.",
+        why1_title: "Svaiga perspektīva", why1_text: "Bez novecojušiem procesiem un mantojuma nastas. Sākam ar mūsdienīgiem rīkiem un skaidru domāšanu.",
+        why2_title: "Tieša piekļuve", why2_text: "Jūs strādājat ar cilvēkiem, kas patiešām veido risinājumu — nevis ar starpnieku kārtām.",
+        why3_title: "Elastīgi un ātri", why3_text: "Mēs ātri pielāgojamies. Jūsu atsauksmes veido to, ko mēs radām no pirmās dienas.",
+        why4_title: "Augam kopā", why4_text: "Mēs arī esam sākuma posmā. Sadarbība ar mums nozīmē augt kopā ar uzņēmumu, kas novērtē jūsu panākumus.",
+        contact_label: "Kontakti", contact_title: "Sāksim kaut ko jaunu",
+        contact_text: "Mēs tikko sākam — sazinieties un esiet starp pirmajiem, kas ar mums sadarbojas.",
+        contact_email_title: "Rakstiet mums", contact_email_text: "Priecāsimies dzirdēt no jums. Rakstiet jebkurā laikā.",
+        footer_desc: "Jauns uzņēmums, kas veido daudzpusīgus profesionālus risinājumus. Svaigas idejas, mūsdienīga pieeja, iespēja augt kopā.",
+        footer_company: "Uzņēmums", footer_solutions: "Risinājumi", footer_connect: "Saziņa", footer_email: "Rakstiet mums",
+        footer_copy: "© 2026 Erogomic. Visas tiesības aizsargātas.", footer_tag: "Dibināts 2026 · Tikko sākam."
+      },
+      ru: {
+        nav_home: "Главная", nav_about: "О нас", nav_services: "Услуги", nav_why: "Почему мы", nav_contact: "Связаться",
+        hero_badge: "Только запущен · 2026",
+        hero_title: "Новый старт для универсальных профессиональных решений",
+        hero_text: "Erogomic — новая компания, которая создаёт гибкие, качественные решения, адаптирующиеся к работе современного бизнеса. Мы только начинаем — и готовы расти вместе с вами.",
+        hero_btn1: "Смотреть предложения", hero_btn2: "Связаться",
+        about_label: "О Erogomic", about_title: "Новая. Создана для универсальности.",
+        about_p1: "Erogomic основана сегодня с простой идеей: профессиональные решения должны быть гибкими, понятными и готовыми расти вместе с теми, кто их использует.",
+        about_p2: "Мы — молодая компания с современным подходом: сначала слушаем, затем создаём умно и приносим реальную ценность без лишней сложности.",
+        stat_founded: "Основана", stat_fresh: "Свежий взгляд", stat_grow: "Пространство для роста",
+        about_card_title: "Начинаем с чистого листа вместе с вами",
+        about_card_text: "Мы новые, мы мотивированы и готовы создавать то, что действительно подходит вашим потребностям.",
+        services_label: "Что мы предлагаем", services_title: "Решения, которые растут вместе с вами",
+        services_text: "Как новая компания, мы создаём гибкие предложения с первого дня — чтобы вы получали современные решения без груза старых систем.",
+        svc1_title: "Индивидуальные решения", svc1_text: "Продукты и системы, созданные под ваши точные требования и рабочие процессы.",
+        svc2_title: "Стратегия и консалтинг", svc2_text: "Чёткие рекомендации и практические планы, которые помогают быстрее принимать лучшие решения.", svc2_short: "Консалтинг",
+        svc3_title: "Внедрение", svc3_text: "Полный цикл реализации — от идеи до работающего решения с уверенностью.",
+        svc4_title: "Постоянная поддержка", svc4_text: "Надёжное обслуживание, обновления и оптимизация, чтобы всё работало стабильно.", svc4_short: "Поддержка",
+        why_label: "Почему Erogomic", why_title: "Почему работать с новой компанией?",
+        why_text: "Быть новыми значит двигаться быстро, внимательно слушать и создавать без старых ограничений.",
+        why1_title: "Свежий взгляд", why1_text: "Без устаревших процессов и наследия прошлого. Мы начинаем с современных инструментов и ясного мышления.",
+        why2_title: "Прямой доступ", why2_text: "Вы работаете с теми, кто реально создаёт решение — без слоёв менеджеров.",
+        why3_title: "Гибко и быстро", why3_text: "Мы быстро адаптируемся. Ваша обратная связь формирует то, что мы создаём с первого дня.",
+        why4_title: "Растём вместе", why4_text: "Мы тоже на раннем этапе. Партнёрство с нами — это рост вместе с компанией, которая ценит ваш успех.",
+        contact_label: "Контакты", contact_title: "Давайте начнём что-то новое",
+        contact_text: "Мы только запускаемся — напишите нам и станьте одними из первых, кто с нами работает.",
+        contact_email_title: "Напишите нам", contact_email_text: "Будем рады услышать вас. Пишите в любое время.",
+        footer_desc: "Новая компания, создающая универсальные профессиональные решения. Свежие идеи, современный подход, пространство для совместного роста.",
+        footer_company: "Компания", footer_solutions: "Решения", footer_connect: "Связь", footer_email: "Напишите нам",
+        footer_copy: "© 2026 Erogomic. Все права защищены.", footer_tag: "Основана в 2026 · Только начинаем."
+      }
+    };
+
+    // ========== LANGUAGE ==========
+    function getPreferredLang() {
+      try {
+        const saved = localStorage.getItem('erogomic_lang');
+        if (saved && translations[saved]) return saved;
+      } catch (e) { /* localStorage may be blocked */ }
+      const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+      if (browserLang.startsWith('lv')) return 'lv';
+      if (browserLang.startsWith('ru')) return 'ru';
+      return 'en';
+    }
+
+    let currentLang = getPreferredLang();
+
+    function t(key) {
+      return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+    }
+
+    // ========== RENDER ==========
+    function render() {
+      try {
+        const app = document.getElementById('app');
+        const fallback = document.getElementById('fallback');
+        if (!app) throw new Error('App container not found');
+
+        app.innerHTML = `
+          <header id="header">
+            <nav class="container">
+              <a href="#" class="logo">Erogo<span>mic</span></a>
+              <ul class="nav-links" id="navLinks">
+                <li><a href="#home">${t('nav_home')}</a></li>
+                <li><a href="#about">${t('nav_about')}</a></li>
+                <li><a href="#services">${t('nav_services')}</a></li>
+                <li><a href="#why">${t('nav_why')}</a></li>
+                <li><a href="#contact" class="nav-cta">${t('nav_contact')}</a></li>
+              </ul>
+              <div class="nav-right">
+                <div class="lang-switcher" id="langSwitcher">
+                  <button class="lang-btn ${currentLang === 'lv' ? 'active' : ''}" data-lang="lv">LV</button>
+                  <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en">EN</button>
+                  <button class="lang-btn ${currentLang === 'ru' ? 'active' : ''}" data-lang="ru">RU</button>
+                </div>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                  <span></span><span></span><span></span>
+                </button>
+              </div>
+            </nav>
+          </header>
+
+          <section class="hero" id="home">
+            <div class="container">
+              <div class="hero-content">
+                <span class="hero-badge">${t('hero_badge')}</span>
+                <h1>${t('hero_title')}</h1>
+                <p>${t('hero_text')}</p>
+                <div class="hero-buttons">
+                  <a href="#services" class="btn btn-primary">${t('hero_btn1')}</a>
+                  <a href="#contact" class="btn btn-secondary">${t('hero_btn2')}</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="about" id="about">
+            <div class="container">
+              <div class="about-grid">
+                <div class="about-text">
+                  <div class="section-header" style="text-align:left;margin:0 0 1.5rem;">
+                    <span class="label">${t('about_label')}</span>
+                    <h2>${t('about_title')}</h2>
+                  </div>
+                  <p>${t('about_p1')}</p>
+                  <p>${t('about_p2')}</p>
+                  <div class="about-stats">
+                    <div class="stat"><strong>2026</strong><span>${t('stat_founded')}</span></div>
+                    <div class="stat"><strong>100%</strong><span>${t('stat_fresh')}</span></div>
+                    <div class="stat"><strong>∞</strong><span>${t('stat_grow')}</span></div>
+                  </div>
+                </div>
+                <div class="about-visual">
+                  <div class="card">
+                    <h4>${t('about_card_title')}</h4>
+                    <p>${t('about_card_text')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="services">
+            <div class="container">
+              <div class="section-header">
+                <span class="label">${t('services_label')}</span>
+                <h2>${t('services_title')}</h2>
+                <p>${t('services_text')}</p>
+              </div>
+              <div class="services-grid">
+                <div class="service-card">
+                  <div class="service-icon">⚙️</div>
+                  <h3>${t('svc1_title')}</h3>
+                  <p>${t('svc1_text')}</p>
+                </div>
+                <div class="service-card">
+                  <div class="service-icon">📊</div>
+                  <h3>${t('svc2_title')}</h3>
+                  <p>${t('svc2_text')}</p>
+                </div>
+                <div class="service-card">
+                  <div class="service-icon">🚀</div>
+                  <h3>${t('svc3_title')}</h3>
+                  <p>${t('svc3_text')}</p>
+                </div>
+                <div class="service-card">
+                  <div class="service-icon">🔄</div>
+                  <h3>${t('svc4_title')}</h3>
+                  <p>${t('svc4_text')}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="why" id="why">
+            <div class="container">
+              <div class="section-header">
+                <span class="label">${t('why_label')}</span>
+                <h2>${t('why_title')}</h2>
+                <p>${t('why_text')}</p>
+              </div>
+              <div class="why-grid">
+                <div class="why-item">
+                  <div class="why-number">01</div>
+                  <div><h3>${t('why1_title')}</h3><p>${t('why1_text')}</p></div>
+                </div>
+                <div class="why-item">
+                  <div class="why-number">02</div>
+                  <div><h3>${t('why2_title')}</h3><p>${t('why2_text')}</p></div>
+                </div>
+                <div class="why-item">
+                  <div class="why-number">03</div>
+                  <div><h3>${t('why3_title')}</h3><p>${t('why3_text')}</p></div>
+                </div>
+                <div class="why-item">
+                  <div class="why-number">04</div>
+                  <div><h3>${t('why4_title')}</h3><p>${t('why4_text')}</p></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="contact" id="contact">
+            <div class="container">
+              <div class="section-header">
+                <span class="label">${t('contact_label')}</span>
+                <h2>${t('contact_title')}</h2>
+                <p>${t('contact_text')}</p>
+              </div>
+              <div class="contact-simple">
+                <div class="contact-email-card">
+                  <div class="icon">📧</div>
+                  <h3>${t('contact_email_title')}</h3>
+                  <a href="mailto:erogomic@gmail.com" class="email-link">erogomic@gmail.com</a>
+                  <p>${t('contact_email_text')}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer>
+            <div class="container">
+              <div class="footer-grid">
+                <div class="footer-brand">
+                  <a href="#" class="logo">Erogo<span>mic</span></a>
+                  <p>${t('footer_desc')}</p>
+                </div>
+                <div class="footer-col">
+                  <h4>${t('footer_company')}</h4>
+                  <ul>
+                    <li><a href="#about">${t('nav_about')}</a></li>
+                    <li><a href="#services">${t('nav_services')}</a></li>
+                    <li><a href="#why">${t('nav_why')}</a></li>
+                    <li><a href="#contact">${t('nav_contact')}</a></li>
+                  </ul>
+                </div>
+                <div class="footer-col">
+                  <h4>${t('footer_solutions')}</h4>
+                  <ul>
+                    <li><a href="#services">${t('svc1_title')}</a></li>
+                    <li><a href="#services">${t('svc2_short')}</a></li>
+                    <li><a href="#services">${t('svc3_title')}</a></li>
+                    <li><a href="#services">${t('svc4_short')}</a></li>
+                  </ul>
+                </div>
+                <div class="footer-col">
+                  <h4>${t('footer_connect')}</h4>
+                  <ul>
+                    <li><a href="mailto:erogomic@gmail.com">${t('footer_email')}</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Twitter / X</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="footer-bottom">
+                <span>${t('footer_copy')}</span>
+                <span>${t('footer_tag')}</span>
+              </div>
+            </div>
+          </footer>
+        `;
+
+        // Success: hide fallback, show app
+        if (fallback) fallback.style.display = 'none';
+        app.style.display = 'block';
+
+        bindEvents();
+      } catch (err) {
+        showError(
+          'Unable to load the site',
+          'We could not prepare this page for display. Please refresh and try again. If the issue continues, contact us at erogomic@gmail.com.',
+          err && err.message ? err.message : String(err)
+        );
+      }
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          try {
+            currentLang = btn.getAttribute('data-lang');
+            try { localStorage.setItem('erogomic_lang', currentLang); } catch (e) {}
+            document.documentElement.lang = currentLang;
+            render();
+          } catch (err) {
+            showError('Unable to switch language', 'The language could not be changed just now. Please refresh the page and try again.', err.message);
+          }
+        });
+      });
+
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+      }
+
+      const header = document.getElementById('header');
+      if (header) {
+        const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 20);
+        window.removeEventListener('scroll', window._erogomicScroll);
+        window._erogomicScroll = onScroll;
+        window.addEventListener('scroll', onScroll);
+        onScroll();
+      }
+    }
+
+    // Start the app
+    try {
+      document.documentElement.lang = currentLang;
+      render();
+    } catch (err) {
+      showError(
+        'Unable to start',
+        'This site requires JavaScript to run. Please enable JavaScript in your browser, then refresh the page. If you need help, contact us at erogomic@gmail.com.',
+        err && err.message ? err.message : String(err)
+      );
+    }
+  </script>
+</body>
+</html>
